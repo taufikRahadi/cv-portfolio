@@ -1,0 +1,107 @@
+<html>
+
+    <head>
+        <title>Todo List</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+
+
+        <div id="app">
+
+            <todo></todo>
+
+        </div>
+
+
+        <script src="vue.js"></script>
+        <script>
+        
+        vue.component('todo', {
+            template: `
+            <div>
+                <b id="judul">Vue Todo List</b>
+                <input type="text" v-model="baru" @keyup.enter='tambah' id="baru" placeholder="Ketik Kegiatan, Lalu Klik Enter" />
+
+                <i>Daftar Kegiatan :</i>
+                <li v-for='(t,index) in tugas'>
+                <button @click='selesai(index, t.status)' value='t.cek' class="button ceklisan"></button>
+                
+                <input type="text" class="todo" :class='garis[index]' :disabled='t.dis' :value='t.kegiatan' v-model="t.kegiatan" />
+
+                <button @click='edit(index, t.dis)' class="button kanan editan"></button>
+                <button @click='hapus(index)' class="button kanan hapusan"></button>
+                </li>
+
+                <div>
+                    <button @click='hapusselesai' class="hapus">Hapus Kegiatan Yang Diceklis</button>
+                    <button @click='hapussemua' class="hapus selesai">Hapus Semua Kegiatan</button>
+                </div>
+            </div>
+            `,
+            data() {
+                return {
+                    tugas : [],
+                    garis : [],
+                    baru : ''
+                }
+            },
+            methods : {
+                tambah() {
+                    if(this.baru == '') {
+                        alert('Silakan Diisi Dulu');
+                    }
+                    else{
+                        this.tugas.push({
+                            kegiatan: this.tugas,
+                            cek: false,
+                            status: 'Belum Selesai',
+                            dis: true
+                        })
+                    }
+                    this.baru = ''
+                },
+                selesai(index, nilai) {
+                    if(nilai == 'Belum Selesai') {
+                        this.tugas[index].cek = true,
+                        this.garis[index] = 'garis1',
+                        this.tugas[index].status = 'selesai'
+                    }
+                    else {
+                        this.tugas[index].cek = false,
+                        this.garis[index] = 'garis2',
+                        this.tugas[index].status = 'belum selesai'
+                    }
+                },
+                edit(index, val) {
+                    if(val == true) {
+                        this.tugas[index].dis = false
+                    }
+                    else {
+                        this.tugas[index].dis = true
+                    }
+                },
+                hapus(index) {
+                    Vue.delete(this.tugas, index)
+                },
+                hapusselesai() {
+                    for(i = this.tugas.length -1; i >= 0; i--) {
+                        if(this.tugas[i].status === 'selesai') {
+                            Vue.delete(this.tugas, i)
+                        }
+                        this.garis[i] = 'garis2'
+                    }
+                },
+                hapussemua() {
+                    this.tugas = []
+                }
+            }
+        })
+        var app = new Vue({
+            el : '#app'
+        }) 
+        
+        </script>
+    </body>
+
+</html>
